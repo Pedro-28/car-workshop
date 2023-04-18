@@ -5,16 +5,17 @@ type SelectProps = {
   labelClasses: string;
   selectClasses: string;
   options: any[];
-  classes: string;
-  handleChange(): void
+  handleChange(value: string): void
 };
 
 export default function Select({
-  id, label,
+  id, 
+  label,
   selectWrapperClasses = '',
   labelClasses = '',
   selectClasses = '',
-  options, handleChange
+  options,
+  handleChange,
 }: SelectProps) {
   return (
     <div className={selectWrapperClasses}>
@@ -24,13 +25,13 @@ export default function Select({
       >
         {label}
       </label>
-      <select id={id} className={selectClasses} onChange={handleChange}>
+      <select id={id} className={selectClasses} onChange={({ target }) => handleChange(target.value)}>
         {
           options.map(({ id, name }) => (
             <option key={id} value={name}>{name}</option>
           ))
         }
       </select>
-    </div>
+    </div >
   );
 }

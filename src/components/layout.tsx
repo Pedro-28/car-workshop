@@ -13,9 +13,11 @@ export default function Layout({ children, title }: LayoutProps) {
       <Head>
         <title>{title}</title>
       </Head>
-      <div className="flex flex-col">
+      <div className="bg-[#F3F3F3] flex flex-col">
         <Header />
-        {children}
+        <div className="h-[calc(100vh-4rem)] w-screen">
+          {children}
+        </div>
       </div>
     </>
   );

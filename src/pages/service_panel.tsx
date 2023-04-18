@@ -1,66 +1,82 @@
 import Button from "@/components/Button";
 import Layout from "@/components/layout";
-
-const collaborators = [
-  { id: 'f5a11820-e2f8-4875-af9f-5e20b1a3a3a1', name: 'joão da Silva' },
-  { id: 'f35a49a5-7e1c-4665-b5d1-77ea5df1258f', name: 'Ana Souza' },
-  { id: 'c88e2317-63a4-4a7f-a97a-38fa7ba4b4b4', name: 'José Santos' },
-  { id: '8f1c83dc-bd14-4769-9350-8b41464b6d13', name: 'Rafaela Costa' },
-  { id: '06df9e44-0b68-4d3f-bc69-7981f7a55e3c', name: 'Luiz Gonzaga' },
-];
-
-const parts = [
-  { id: '8f3e4633-6d9f-42f9-b41e-6c1730fc2d2a', name: 'Amortecedor', price: 300 },
-  { id: 'ce79a1e6-07c6-4a6a-9c3e-6d1b6a93a6a1', name: 'Bateria', price: 250 },
-  { id: '10c7d1a4-4ad7-4af4-9a14-1b2855e5e5c9', name: 'Pastilha de Freio', price: 150 },
-  { id: 'a0a40fc7-1b23-4f84-9e3d-473a3a048a69', name: 'Radiador', price: 400 },
-  { id: '181ba988-4c4d-4d15-a77c-48f13a0745b9', name: 'Correia Dentada', price: 100 },
-];
-
+import Select from "@/components/Select";
+import { collaborators, parts } from "@/utils/data";
+import { useState } from "react";
 
 export default function ServicePanel() {
-  
+  const [collaboratorName, setCollaboratorName] = useState('');
+  const [laborCost, setLaborCost] = useState('');
+  const [partName, setPartName] = useState('');
+  const [totalPrice, setTotalPrice] = useState(0);
+  const [startTime, setStartTime] = useState('');
+
+  const handleTotalPrice = () => {
+    let totalValue = parts.reduce((total, part) => {
+      if (part.name === partName) {
+        return total + part.price
+      }
+
+      return total;
+    }, 0);
+
+    totalValue += Number(laborCost);
+
+    setTotalPrice(totalValue);
+  }
+
+  const handleServiceStart = () => {
+    setStartTime(new Date().toLocaleString())
+  }
 
   return (
-    <Layout title='Painel de serviço'>      
-      <div className='w-screen h-screen flex justify-center items-center'>
-        <form className="bg-slate-500 p-10 rounded-md gap-2 flex flex-col ">
-          <h1 className="text-5xl font-roboto">Painel de serviço</h1>
-          <label htmlFor="collaborators">Responsável pelo serviço:</label>
-          <select id='collaborators'>
-            <option hidden>Responsável pelo serviço</option>
-            {
-              collaborators.map(({ id, name }) => (
-                <option key={id} value={name}>{name}</option>
-              ))
-            }
-          </select>
+    <Layout title='Painel de serviço'>
+      <div className='w-screen h-full flex flex-col items-center'>
+        <h1 className="text-[#168BB3] my-8 text-5xl font-roboto">Painel de serviço</h1>
+        <form className="w-9/12 h-3/4 p-10 gap-2 flex flex-col justify-evenly rounded border-2 border-[#168BB3] ">
+
+          <Select
+            id={'collaborators'}
+            label={'Responsável pelo serviço:'}
+            selectWrapperClasses={''}
+            labelClasses={'text-xl font-semibold'}
+            selectClasses={'w-full p-1 bg-transparent rounded border-2 border-[#168BB3]'}
+            options={collaborators}
+            handleChange={setCollaboratorName}
+          />
 
           <div>
-            <label htmlFor="laborCost">Mão de obra:</label>
-            <input type='number' id='laborCost' />
+            <label className="text-xl font-semibold" htmlFor="laborCost">Mão de obra:</label>
+            <input
+              className="w-full p-1 bg-transparent rounded border-2 border-[#168BB3]"
+              type='number' id='laborCost'
+              min={0}
+              onChange={({ target }) => setLaborCost(target.value)}
+            />
           </div>
 
-          <label htmlFor="parts">Peças:</label>
-          <select id='parts'>
-            {
-              parts.map(({ id, name }) => (
-                <option key={id} value={name}>{name}</option>
-              ))
-            }
-          </select>
-
-
-
+          <Select
+            id={'parts'}
+            label={'Peças:'}
+            selectWrapperClasses={''}
+            labelClasses={'text-xl font-semibold'}
+            selectClasses={'w-full p-1 bg-transparent rounded border-2 border-[#168BB3]'}
+            options={parts}
+            handleChange={setPartName}
+          />
 
           <Button
             type='submit'
-            classes='bg-[#2493BA] p-3 rounded font-bold'
-            handleClick={() => { }}
+            classes='bg-[#2493BA] p-3 rounded font-bold disabled:bg-[#2492ba73] disabled:text-[#000000a9]'
+            handleClick={handleServiceStart}
+            disabled={!(!!collaboratorName && !!laborCost && !!partName)}
           >
             Iniciar serviço
           </Button>
         </form>
+        <div id="service">
+
+        </div>
       </div>
     </Layout>
   )
